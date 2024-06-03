@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>타이핑 기능 구현</title>
+    <style>
+      .blink {
+        animation: blink 0.5s infinite; /* 애니메이션 이름: blink, 지속 시간: 0.5초, 무한 반복 */
+        /* blink 클래스를 가진 요소가 0.5초 동안 서서히 사라졌다가(투명도가 1에서 0으로) 다시 나타나는 애니메이션을 무한히 반복하도록 합니다 */
+        font-size: 20px;
+      }
+      @keyframes blink {
+        /* to 끝지점 */
+        to {
+          opacity: 0; /* 애니메이션이 끝날 때(100% 시점)에 투명도를 0으로 설정 */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <span class="text"></span>
+      <span class="blink">|</span>
+    </div>
+    <script>
+      const content = 'Hi. my name is HyunJin,\nI like hiking';
+      const text = document.querySelector('.text');
+
+      let i = 0;
+
+      function typing() {
+        if (i < content.length) {
+          let txt = content.charAt(i);
+          if (txt === '\n') {
+            text.innerHTML += '<br/>';
+          } else {
+            text.innerHTML += txt;
+          }
+          i++;
+        } else {
+          setTimeout(() => {
+            text.innerHTML = '';
+            i = 0;
+          }, 2000);
+        }
+      }
+      setInterval(typing, 200); // 200밀리초마다 typing 함수 호출 // 200밀리초마다 typing 함수 호출
+    </script>
+  </body>
+</html>
