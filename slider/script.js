@@ -70,7 +70,7 @@ function autoSlide() {
         } else {
             goToSlide(0)
         }
-    }, 2000);
+    }, 3000);
 }
 autoSlide()
 
