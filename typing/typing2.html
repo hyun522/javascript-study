@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            box-sizing: border-box;  
+            font-family: Pretendard;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+        }
+        .typing { height: 55px;  display: flex; justify-content: center; align-items: flex-end; font-size: 1.8rem;}
+
+        .text { width: 600px; font-size: 2.2rem; text-align: center;}
+
+        .text::after {
+            content: '';
+            margin-left: .4rem;
+            border-right: 2px solid #000;
+            animation: cursor .9s infinite steps(2);
+        }
+
+        @keyframes cursor {
+            to { border-right: none }
+        }
+    </style>
+</head>
+<body>
+    <div class='typing'><h1 class="text"></h1></div>
+    <script src="typing-script2.js"></script>
+</body>
+</html>
