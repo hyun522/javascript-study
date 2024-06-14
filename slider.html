@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>slider</title>
+    <style>
+      .display {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .contentsAndButtonContent {
+        position: relative;
+      }
+      .sliderContents {
+        width: 500px;
+        height: 300px;
+        background-color: pink;
+        overflow: hidden;
+        position: relative;
+      }
+      .toMoveAllContent {
+        width: 2500px;
+        height: 300px;
+        display: flex;
+        transition: transform 0.5s;
+      }
+      .sliderContents .content {
+        flex: 0 0 100%;
+        height: 100%;
+      }
+      .content:nth-child(1) {
+        background-color: red;
+      }
+      .content:nth-child(2) {
+        background-color: orange;
+      }
+      .content:nth-child(3) {
+        background-color: yellow;
+      }
+      .content:nth-child(4) {
+        background-color: green;
+      }
+      .content:nth-child(5) {
+        background-color: purple;
+      }
+      .button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #ccc;
+        width: 80px;
+        height: 80px;
+        border: none;
+        border-radius: 50%;
+        font-size: 40px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+      }
+      .prev {
+        left: -50px;
+      }
+      .next {
+        right: -50px;
+      }
+      .pagination {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+      }
+      .pagination button {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: none;
+        background-color: #ccc;
+        cursor: pointer;
+      }
+      .pagination button.active {
+        background-color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="display">
+      <div class="contentsAndButtonContent">
+        <div class="sliderContents">
+          <div class="toMoveAllContent" id="move">
+            <div class="content"></div>
+            <div class="content"></div>
+            <div class="content"></div>
+            <div class="content"></div>
+            <div class="content"></div>
+          </div>
+        </div>
+        <button class="button prev" id="prevBtn">＜</button>
+        <button class="button next" id="nextBtn">＞</button>
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+    <script>
+      let currentIndex = 0;
+      const move = document.getElementById('move');
+      const contents = move.children;
+      const totalContents = contents.length;
+      const slideInterval = 4000;
+      const pagination = document.getElementById('pagination');
+
+      function moveSlider(index) {
+        currentIndex = index;
+        const offset = -currentIndex * 100;
+        move.style.transform = `translateX(${offset}%)`;
+        updatePagination();
+      }
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalContents;
+        moveSlider(currentIndex);
+      }
+
+      function prevSlide() {
+        currentIndex = (currentIndex - 1 + totalContents) % totalContents;
+        moveSlider(currentIndex);
+      }
+
+      function createPaginationButtons() {
+        for (let i = 0; i < totalContents; i++) {
+          const button = document.createElement('button');
+          button.addEventListener('click', () => moveSlider(i));
+          pagination.appendChild(button);
+        }
+        updatePagination();
+      }
+
+      function updatePagination() {
+        const buttons = pagination.children;
+        for (let i = 0; i < buttons.length; i++) {
+          buttons[i].classList.remove('active');
+        }
+        buttons[currentIndex].classList.add('active');
+      }
+
+      let autoSlide = setInterval(nextSlide, slideInterval);
+
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        nextSlide();
+      });
+
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        prevSlide();
+      });
+
+      createPaginationButtons();
+    </script>
+  </body>
+</html>
