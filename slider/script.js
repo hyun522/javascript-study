@@ -82,7 +82,6 @@ imagesWrap.addEventListener('mouseleave', function () {
     autoSlide();
 })
 
-
 /*
 const left = document.querySelector(".left");
 const right = document.querySelector(".right");
