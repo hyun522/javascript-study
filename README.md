@@ -15,6 +15,7 @@
 
 ${\textsf{\color{gray}⬇️ 주마다 구현할 기능에 대한 정보입니다.}}$
 
-> <a href="https://www.example.com">🖇️ 링크 </a>
+> [🖇️ 링크](https://glory-cornflower-db3.notion.site/4ba5cf82896a4a90bcca9ffbed7e7c7b?pvs=4)
+
 
 <br />
