@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>barChart</title>
+  </head>
+  <body>
+    <div>
+      <canvas id="myChart" width="500" height="400"></canvas>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const ctx = document.getElementById('myChart');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [
+            '영화관람',
+            '음악연주관람',
+            '전시회관람',
+            '전통예술공연관람',
+            '무용공연관람',
+          ],
+          datasets: [
+            {
+              label: '2022년도',
+              data: [60, 3.4, 9.6, 2.9, 0.9],
+              borderWidth: 1,
+              backgroundColor: '#00C7E2',
+              maxBarThickness: 50,
+            },
+            {
+              label: '2023년도',
+              data: [68.5, 4.1, 9.2, 4.8, 1.7],
+              borderWidth: 1,
+              backgroundColor: '#FF7DA8',
+              maxBarThickness: 50,
+            },
+          ],
+        },
+        options: {
+          responsive: false,
+          animation: {
+            duration: 3000,
+            easing: 'easeInOutSine',
+            delay: 1000,
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 80,
+              ticks: {
+                callback: function (value) {
+                  return value.toFixed(1);
+                },
+              },
+              title: {
+                display: true,
+                text: '비율(%)',
+                font: {
+                  weight: 'bold',
+                },
+                padding: {
+                  bottom: 5,
+                },
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: '문화 예술 관람 활동 유형',
+                font: {
+                  size: 19,
+                  weight: 'bold',
+                },
+                padding: {
+                  top: 20,
+                },
+              },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
