@@ -1,257 +1,368 @@
+// 데이터 추가하기
+let newResult = { id: "null", 제목: "null", 가격: "null", 수량: "null" };
 
-// const addBtn = document.getElementById("add");
-// const editBtn = document.getElementById("edit");
-// const removeBtn = document.getElementById("remove");
+let addBtn = document.getElementById("add-btn");
+let addResult = document.getElementById("add-result");
+let inputTitle = document.getElementById("title");
+let inputPrice = document.getElementById("price");
+let inputAmount = document.getElementById("amount");
+
+function priceInputFunktion(event) {
+  // 소수점 두 번째 자리까지 입력 허용
+  let value = this.value; //입력 필드의 현재 값을 변수 value에 저장합니다.
+  value = value.replace(/\./g, ",").replace(/[^0-9,]/g, ""); // 점을 콤마로 변환, 숫자와 콤마(,)만 허용
+  let parts = value.split(","); // 점을 기준으로 두개로 나눔 ['12','34]
+
+  if (parts.length > 2) {
+    // parts배열의 길이가 2보다 크다면
+    value = parts[0] + "," + parts.slice(1).join(""); // 두 개 이상의 점(.)이 입력되는 경우 첫 번째 점(.)만 유지
+  }
+
+  this.value = value; // 수정된 값을 다시 입력 필드에 할당
+  validateInputs(); // 유효성 검사
+}
+
+function amountInputFunktion(event) {
+  // 소수점 두 번째 자리까지 입력 허용
+  let value = this.value; //입력 필드의 현재 값을 변수 value에 저장합니다.
+  value = value.replace(/[^0-9]/g, ""); // 숫자만 허용
+
+  this.value = value; // 수정된 값을 다시 입력 필드에 할당
+  validateInputs(); // 유효성 검사
+}
+
+function validateInputs() {
+  // 유효성 검사 함수
+  let title = inputTitle.value;
+  let price = inputPrice.value;
+  let amount = inputAmount.value;
+
+  let priceValue = parseFloat(price.replace(/,/g, "."));
+  let amountValue = parseFloat(amount);
+
+  let isValid = true; // 유효성 검사 초기화
+
+  // 입력 필드가 비어 있는지 확인
+  if (title === "" || price === "" || amount === "" || isNaN(priceValue) || isNaN(amountValue)) {
+    isValid = false;
+  }
+
+  // 테두리 제거
+  inputTitle.style.borderColor = "";
+  inputPrice.style.borderColor = "";
+  inputAmount.style.borderColor = "";
+
+  return isValid; // 유효성 검사 반환
+}
+
+// 추가 버튼 클릭 시 처리
+addBtn.addEventListener("click", function () {
+  // 유효성 검사 실행
+  let isValid = validateInputs();
+
+  if (isValid) {
+    let newId = tests.length ? tests[tests.length - 1].id + 1 : 1;
+
+    // 새로운 데이터 객체 생성
+    let newObj = {
+      id: newId,
+      제목: inputTitle.value,
+      가격: inputPrice.value,
+      수량: inputAmount.value,
+    };
+
+    // 배열에 추가하기
+    tests.push(newObj);
+
+    // 테이블에 추가 (추가 함수가 없으므로 구현 필요)
+    addRow(newObj);
+
+    // 입력 필드 초기화
+    inputTitle.value = "";
+    inputPrice.value = "";
+    inputAmount.value = "";
+  } else {
+    // 유효성 검사 실패 시 알림
+    alert("모든 필드를 입력하세요.");
+
+    // 비어 있는 인풋 필드에 테두리를 표시
+    if (!inputTitle.value) {
+      inputTitle.style.borderColor = "red";
+    }
+    if (!inputPrice.value || isNaN(parseFloat(inputPrice.value.replace(/,/g, ".")))) {
+      inputPrice.style.borderColor = "red";
+    }
+    if (!inputAmount.value || isNaN(parseFloat(inputAmount.value))) {
+      inputAmount.style.borderColor = "red";
+    }
+  }
+});
+
+// 인풋 필드 입력 시 테두리 초기화
+inputTitle.addEventListener("input", function () {
+  inputTitle.style.borderColor = "";
+});
+inputPrice.addEventListener("input", function () {
+  inputPrice.style.borderColor = "";
+});
+inputAmount.addEventListener("input", function () {
+  inputAmount.style.borderColor = "";
+});
+
+// 가격 입력 필드에 대한 이벤트 리스너 등록
+inputPrice.addEventListener("input", priceInputFunktion);
+// 수량 입력 필드에 대한 이벤트 리스너 등록
+inputAmount.addEventListener("input", amountInputFunktion);
 
 let rIndex; // 선택
 let table = document.getElementById("table");
 
-// 데이터 추가하기
 let tests = [
-    {'id': 1, '제목':'해리포터와 마법사의 돌', '가격':'10,000원', '수량':'140'},
-    {'id': 2, '제목':'세종대왕의 눈물', '가격':'12,000원', '수량':'160'},
-    {'id': 3, '제목':'습관의 힘', '가격':'11,000원', '수량':'240'},
-]
+  { id: 1, 제목: "해리포터와 마법사의 돌", 가격: "10,000", 수량: "140" },
+  { id: 2, 제목: "세종대왕의 눈물", 가격: "12,000", 수량: "160" },
+  { id: 3, 제목: "습관의 힘", 가격: "11,000", 수량: "240" },
+];
 
-for (let i in tests){
-    addRow(tests[i])
+for (let i in tests) {
+  addRow(tests[i]);
 }
 function addRow(obj) {
-    let table = document.getElementById('tests-table');
-    
-    // 줄 추가
-    let row = document.createElement('tr');
-    row.setAttribute('scope', 'row');
-    row.className = `test-row-${obj.id}`;
-    
-    // 제목 셀 추가
-    let titleCell = document.createElement('td');
-    titleCell.id = `title-${obj.id}`;
-    titleCell.setAttribute('data-testid', obj.id);
-    titleCell.textContent = obj.제목;
-    row.appendChild(titleCell);
-    
-    // 가격 셀 추가
-    let priceCell = document.createElement('td');
-    priceCell.id = `price-${obj.id}`;
-    priceCell.setAttribute('data-testid', obj.id);
-    priceCell.textContent = obj.가격;
-    row.appendChild(priceCell);
-    
-    // 수량 셀 추가
-    let quantityCell = document.createElement('td');
-    quantityCell.id = `quantity-${obj.id}`;
-    quantityCell.setAttribute('data-testid', obj.id);
-    quantityCell.textContent = obj.수량;
-    row.appendChild(quantityCell);
-    
-    // 수정 버튼
-    let editCell = document.createElement('td');
-    let editButton = document.createElement('button');
-    editButton.className = 'btn btn-sm btn-danger';
-    editButton.id = `edit-${obj.id}`;
-    editButton.setAttribute('data-testid', obj.id);
-    editButton.textContent = '수정';
-    editCell.appendChild(editButton);
-    row.appendChild(editCell);
+  let table = document.getElementById("tests-table");
 
-    // 삭제 버튼
-    let deleteCell = document.createElement('td');
-    let deleteButton = document.createElement('button');
-    deleteButton.className = 'btn btn-sm btn-danger';
-    deleteButton.id = `delete-${obj.id}`;
-    deleteButton.setAttribute('data-testid', obj.id);
-    deleteButton.textContent = '삭제';
-    deleteButton.addEventListener('click', deleteTest);
-    deleteCell.appendChild(deleteButton);
-    row.appendChild(deleteCell);   
+  // 줄 추가
+  let row = document.createElement("tr");
+  row.setAttribute("scope", "row");
+  row.className = `test-row-${obj.id}`;
 
-    table.appendChild(row);
+  // 제목 셀 추가
+  let titleCell = document.createElement("td");
+  titleCell.id = `title-${obj.id}`;
+  titleCell.setAttribute("data-testid", obj.id);
+  titleCell.textContent = obj.제목;
+  row.appendChild(titleCell);
 
-    // 제목 셀 클릭 수정
-    let titleCellId = document.getElementById(`title-${obj.id}`);
-    titleCellId.addEventListener('click', editResult)
+  // 가격 셀 추가
+  let priceCell = document.createElement("td");
+  priceCell.id = `price-${obj.id}`;
+  priceCell.setAttribute("data-testid", obj.id);
+  priceCell.textContent = obj.가격;
+  row.appendChild(priceCell);
 
-    // 가격 셀 클릭 수정
-    let priceCellId = document.getElementById(`price-${obj.id}`);
-    priceCellId.addEventListener('click', editResult)
+  // 수량 셀 추가
+  let amountCell = document.createElement("td");
+  amountCell.id = `amount-${obj.id}`;
+  amountCell.setAttribute("data-testid", obj.id);
+  amountCell.textContent = obj.수량;
+  row.appendChild(amountCell);
 
-    // 수량 셀 클릭 수정
-    let quantityCellId = document.getElementById(`quantity-${obj.id}`);
-    quantityCellId.addEventListener('click', editResult)
+  // 수정 버튼
+  let editCell = document.createElement("td");
+  let editButton = document.createElement("button");
+  editButton.className = "btn btn-sm btn-success";
+  editButton.id = `edit-${obj.id}`;
+  editButton.setAttribute("data-testid", obj.id);
+  editButton.textContent = "수정";
+  editCell.appendChild(editButton);
+  row.appendChild(editCell);
 
-    // 수정 버튼으로 내용 수정
+  // 삭제 버튼
+  let deleteCell = document.createElement("td");
+  let deleteButton = document.createElement("button");
+  deleteButton.className = "btn btn-sm btn-danger";
+  deleteButton.id = `delete-${obj.id}`;
+  deleteButton.setAttribute("data-testid", obj.id);
+  deleteButton.textContent = "삭제";
+  deleteButton.addEventListener("click", deleteTest);
+  deleteCell.appendChild(deleteButton);
+  row.appendChild(deleteCell);
+
+  table.appendChild(row);
+
+  // 제목 셀 클릭 수정
+  let titleCellId = document.getElementById(`title-${obj.id}`);
+  titleCellId.addEventListener("click", editResult);
+
+  // 가격 셀 클릭 수정
+  let priceCellId = document.getElementById(`price-${obj.id}`);
+  priceCellId.addEventListener("click", editResult);
+
+  // 수량 셀 클릭 수정
+  let amountCellId = document.getElementById(`amount-${obj.id}`);
+  amountCellId.addEventListener("click", editResult);
+
+  // 수정 버튼으로 내용 수정
+  document.addEventListener("DOMContentLoaded", function () {
     let editBtn = document.getElementById(`edit-${obj.id}`);
-    editBtn.addEventListener('click', saveUpdate);
+    if (!editBtn) {
+      console.error(`Element with id 'edit-${obj.id}' not found.`);
+      return;
+    }
+
+    editBtn.addEventListener("click", function () {
+      let titleInputValue = document.getElementById(`title-${obj.id}-input`);
+      let priceInputValue = document.getElementById(`price-${obj.id}-input`);
+      let amountInputValue = document.getElementById(`amount-${obj.id}-input`);
+
+      // 요소가 정상적으로 찾아졌는지 확인
+      if (!titleInputValue) {
+        console.error(`Element with id 'title-${obj.id}-input' not found.`);
+        return;
+      }
+      if (!priceInputValue) {
+        console.error(`Element with id 'price-${obj.id}-input' not found.`);
+        return;
+      }
+      if (!amountInputValue) {
+        console.error(`Element with id 'amount-${obj.id}-input' not found.`);
+        return;
+      }
+
+      // 입력값이 비어있는지 확인
+      if (titleInputValue.value.trim() === "" || priceInputValue.value.trim() === "" || amountInputValue.value.trim() === "") {
+        // 인풋에 공백이 있을 경우
+        alert("내용을 입력하세요.");
+        // 비어 있는 인풋 필드에 테두리를 표시
+        if (titleInputValue.value.trim() === "") {
+          titleInputValue.style.borderColor = "red";
+        }
+        if (priceInputValue.value.trim() === "") {
+          priceInputValue.style.borderColor = "red";
+        }
+        if (amountInputValue.value.trim() === "") {
+          amountInputValue.style.borderColor = "red";
+        }
+
+        // 인풋 필드 입력 시 테두리 초기화
+        titleInputValue.addEventListener("input", function () {
+          titleInputValue.style.borderColor = "";
+        });
+        priceInputValue.addEventListener("input", function () {
+          priceInputValue.style.borderColor = "";
+        });
+        amountInputValue.addEventListener("input", function () {
+          amountInputValue.style.borderColor = "";
+        });
+
+        return;
+      }
+
+      saveUpdate.call(this);
+    });
+  });
 }
 
-// 수정버튼으로 내용 수정
-function saveUpdate() { 
-    console.log('saved!');
+// 수정버튼으로 내용 수정 function
+function saveUpdate() {
+  console.log("saved!");
 
-    let testid = this.getAttribute('data-testid');
-    let editBtn = document.getElementById(`edit-${testid}`);
-    let row = document.querySelector(`.test-row-${testid}`);
+  let testid = this.getAttribute("data-testid");
+  let editBtn = document.getElementById(`edit-${testid}`);
+  let row = document.querySelector(`.test-row-${testid}`);
 
-    // 인풋 가져오기
-    let titleInput = row.querySelector(`#title-${testid}-input`);
-    let priceInput = row.querySelector(`#price-${testid}-input`);
-    let quantityInput = row.querySelector(`#quantity-${testid}-input`);
+  // 인풋 가져오기
+  let titleInput = row.querySelector(`#title-${testid}-input`);
+  let priceInput = row.querySelector(`#price-${testid}-input`);
+  let amountInput = row.querySelector(`#amount-${testid}-input`);
 
-    if (titleInput && priceInput && quantityInput) {
-        // 셀의 텍스트를 인풋의 값으로 대체
-        let titleCell = row.querySelector(`#title-${testid}`);
-        let priceCell = row.querySelector(`#price-${testid}`);
-        let quantityCell = row.querySelector(`#quantity-${testid}`);
+  if (titleInput) {
+    // 셀의 텍스트를 인풋의 값으로 대체
+    let titleCell = row.querySelector(`#title-${testid}`);
+    titleCell.textContent = titleInput.value;
+    titleInput.remove();
+    titleCell.addEventListener("click", editResult);
+  }
+  if (priceInput) {
+    let priceCell = row.querySelector(`#price-${testid}`);
+    priceCell.textContent = priceInput.value;
+    priceInput.remove();
+    priceCell.addEventListener("click", editResult);
+  }
+  if (amountInput) {
+    let amountCell = row.querySelector(`#amount-${testid}`);
+    amountCell.textContent = amountInput.value;
+    amountInput.remove();
+    amountCell.addEventListener("click", editResult);
+  }
 
-        titleCell.textContent = titleInput.value;
-        priceCell.textContent = priceInput.value;
-        quantityCell.textContent = quantityInput.value;
+  editBtn.disabled = true;
+  row.style.opacity = "0.5";
 
-        // 클릭 이벤트 다시 추가
-        titleCell.addEventListener('click', editResult);
-        priceCell.addEventListener('click', editResult);
-        quantityCell.addEventListener('click', editResult);
-
-        // 인풋 제거
-        titleInput.remove();
-        priceInput.remove();
-        quantityInput.remove();
-    
-        editBtn.disabled = true;
-        row.style.opacity = '0.5';
-
-        setTimeout(function () {
-            row.style.opacity = '1';
-        }, 1000);
-    }
+  setTimeout(function () {
+    row.style.opacity = "1";
+  }, 300);
 }
 
 // 삭제 기능
 function deleteTest() {
-    let testid = this.getAttribute('data-testid');
-    let row = document.querySelector(`.test-row-${testid}`);
-    row.remove();
+  let testid = this.getAttribute("data-testid");
+  let row = document.querySelector(`.test-row-${testid}`);
+  row.remove();
 }
 
 //줄 수정하기
-function editResult() { 
-    let testid = this.getAttribute('data-testid');
-    let value = this.textContent;
+function editResult() {
+  let testid = this.getAttribute("data-testid");
+  let value = this.textContent.trim();
 
-    // 클릭 이벤트 삭제(클릭하면 인풋 태그가 뜨기 때문에)
-    this.removeEventListener('click', editResult);
+  // 클릭 이벤트 삭제(클릭하면 인풋 태그가 뜨기 때문에)
+  this.removeEventListener("click", editResult);
 
-    // 인풋 엘리먼트 추가
-    let input = document.createElement('input');
-    input.className = 'input form-control';
-    input.setAttribute('type', 'text');
-    input.setAttribute('data-testid', testid);
-    input.id = `${this.id}-input`; // 각 셀의 ID에 '-input'을 추가하여 구분
-    input.value = value;
+  // 인풋 엘리먼트 추가
+  let input = document.createElement("input");
+  input.className = "input form-control";
+  input.setAttribute("type", "text");
+  input.setAttribute("data-testid", testid);
+  input.id = `${this.id}-input`; // 각 셀의 ID에 '-input'을 추가하여 구분
+  input.value = value;
 
-    // 내용대체
-    this.innerHTML = ''; 
-    this.appendChild(input);
+  // 내용대체
+  this.innerHTML = "";
+  this.appendChild(input);
 
-    // 키업 이벤트 인풋에 추가
-    input.addEventListener('keyup', function () { 
-        let testid = this.getAttribute('data-testid');
-        let editBtn = document.getElementById(`edit-${testid}`);
-        editBtn.disabled = false;
-    })
+  // 입력 이벤트 핸들러 추가
+  input.addEventListener("input", function () {
+    let testid = this.getAttribute("data-testid");
+    let editBtn = document.getElementById(`edit-${testid}`);
+    let inputId = this.id; // 입력 필드의 id 속성 가져오기
+    let value = this.value.trim(); // 입력 필드의 값(value)를 가져와서 공백을 제거한 후 변수에 할당
+
+    // 가격과 수량 입력 필드에 숫자만 입력할 수 있도록 제한
+    if (inputId === `price-${testid}-input`) {
+      value = value.replace(/\./g, ",").replace(/[^0-9,]/g, ""); // 점을 콤마로 변환, 숫자와 콤마(,)만 허용
+      let parts = value.split(","); // 점을 기준으로 나누기
+      if (parts.length > 2) {
+        value = parts[0] + "," + parts.slice(1).join(""); // 두 개 이상의 점(.)이 입력되는 경우 첫 번째 점(.)만 유지
+      }
+    } else if (inputId === `amount-${testid}-input`) {
+      // 수량 입력 필드인 경우
+      value = value.replace(/[^0-9]/g, ""); // 숫자만 허용
+    }
+    // 입력 필드에 수정된 값(value) 적용
+    this.value = value;
+
+    // 가격 필드와 수량 필드에서만 유효성 검사
+    if (inputId === `price-${testid}-input` || inputId === `amount-{testid}-input`) {
+      // 문자가 포함되어있는지 검사
+      if (/\D/.test(value) && input === `price-${testid}-input`) {
+        // 가격 필드에서만 검사
+        this.value = value.replace(/[^\d,]/g, ""); // 숫자와 쉼표 이외의 문자는 제거
+      }
+    }
+
+    // Edit 버튼 활성화
+    editBtn.disabled = false;
+
+    // 포커스 설정
+    input.focus();
+  });
 }
 
 // 검색하기
 // const searchInput = document.getElementById("search");
 // const rows = document.querySelectorAll("tbody tr")
-// searchInput.addEventListener('keyup', function (event) { 
+// searchInput.addEventListener('keyup', function (event) {
 //     const q = event.target.value.toLowerCase();
-//     rows.forEach((row) => { 
+//     rows.forEach((row) => {
 //         row.querySelector('td').textContent.toLowerCase().startsWith(q) ? (row.style.display = '') : (row.style.display = 'none')
 //     })
-// })
-
-// 빈 인풋 체크
-function checkEmptyInput() { 
-    let isEmpty = false;
-    let title = document.getElementById("title").value;
-    let price = document.getElementById("price").value;
-    let amount = document.getElementById("amount").value;
-
-    if (title === "") { 
-        alert("First Name Connot Be Empty");
-        isEmpty = true;
-    }else if (price === "") { 
-        alert("Last Name Connot Be Empty");
-        isEmpty = true;
-    }else if (amount === "") { 
-        alert("amount Connot Be Empty");
-        isEmpty = true;
-    }
-    return isEmpty;
-}
-
-// 줄 추가하기
-function addHTMLTableRow() { 
-    if (!checkEmptyInput()) { 
-        let newRow = table.insertRow(table.length);
-        let cell1 = newRow.insertCell(0);
-        let cell2 = newRow.insertCell(1);
-        let cell3 = newRow.insertCell(2);
-        let cell4 = newRow.insertCell(3);
-        let cell5 = newRow.insertCell(4);
-        
-        let title = document.getElementById("title").value;
-        let price = document.getElementById("price").value;
-        let amount = document.getElementById("amount").value;
-        
-        document.querySelectorAll("tr input").innerHTML = "";
-        cell1.innerHTML = title;
-        cell2.innerHTML = price;
-        cell3.innerHTML = amount;
-
-    }
-}
-
-// addBtn.addEventListener('click', function () { 
-//     addHTMLTableRow()
-// })
-
-// // 줄 선택하고 인풋창에 보여주기
-// function selectedRowToInput() { 
-//     for (let i = 1; i < table.rows.length; i++) { 
-//         table.rows[i].onclick = function () { 
-//             rIndex = this.rowIndex;
-//             document.getElementById("title").value = this.cells[0].innerHTML;
-//             document.getElementById("price").value = this.cells[1].innerHTML;
-//             document.getElementById("amount").value = this.cells[2].innerHTML;
-//         }
-//     }
-// }
-// selectedRowToInput();
-
-// 선택한 줄 수정하기
-function editHtmlTableSelectedRow() { 
-    let title = document.getElementById("title").value;
-    let price = document.getElementById("price").value;
-    let amount = document.getElementById("amount").value;
-    if (!checkEmptyInput()) { 
-        table.rows[rIndex].cells[0].innerHTML = title;
-        table.rows[rIndex].cells[1].innerHTML = price;
-        table.rows[rIndex].cells[2].innerHTML = amount;
-    }
-}
-
-// editBtn.addEventListener('click', function () { 
-//     editHtmlTableSelectedRow()
-// })
-
-// 선택한 줄 지우기
-function removeSelectedRow() { 
-    table.deleteRow(rIndex);
-}
-
-// removeBtn.addEventListener('click', function () { 
-//     removeSelectedRow()
 // })
