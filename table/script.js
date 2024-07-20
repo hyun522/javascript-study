@@ -199,49 +199,66 @@ function addRow(obj) {
     }
 
     editBtn.addEventListener("click", function () {
-      let titleInputValue = document.getElementById(`title-${obj.id}-input`);
-      let priceInputValue = document.getElementById(`price-${obj.id}-input`);
-      let amountInputValue = document.getElementById(`amount-${obj.id}-input`);
+      let row = document.querySelector(`.test-row-${obj.id}`);
+      let titleInput = row.querySelector(`#title-${obj.id}-input`);
+      let priceInput = row.querySelector(`#price-${obj.id}-input`);
+      let amountInput = row.querySelector(`#amount-${obj.id}-input`);
 
-      // 요소가 정상적으로 찾아졌는지 확인
-      if (!titleInputValue) {
-        console.error(`Element with id 'title-${obj.id}-input' not found.`);
-        return;
+      // 유효성 검사
+      let isEmpty = false;
+      if (titleInput && titleInput.value.trim() === "") {
+        isEmpty = true;
       }
-      if (!priceInputValue) {
-        console.error(`Element with id 'price-${obj.id}-input' not found.`);
-        return;
+      if (priceInput && priceInput.value.trim() === "") {
+        isEmpty = true;
       }
-      if (!amountInputValue) {
-        console.error(`Element with id 'amount-${obj.id}-input' not found.`);
-        return;
+      if (amountInput && amountInput.value.trim() === "") {
+        isEmpty = true;
       }
 
-      // 입력값이 비어있는지 확인
-      if (titleInputValue.value.trim() === "" || priceInputValue.value.trim() === "" || amountInputValue.value.trim() === "") {
-        // 인풋에 공백이 있을 경우
+      if (isEmpty) {
         alert("내용을 입력하세요.");
-        // 비어 있는 인풋 필드에 테두리를 표시
-        if (titleInputValue.value.trim() === "") {
-          titleInputValue.style.borderColor = "red";
+
+        // 공백이 있는 인풋 필드에 빨간 테두리 표시
+        if (titleInput && titleInput.value.trim() === "") {
+          titleInput.style.borderColor = "red";
         }
-        if (priceInputValue.value.trim() === "") {
-          priceInputValue.style.borderColor = "red";
+        if (priceInput && priceInput.value.trim() === "") {
+          priceInput.style.borderColor = "red";
         }
-        if (amountInputValue.value.trim() === "") {
-          amountInputValue.style.borderColor = "red";
+        if (amountInput && amountInput.value.trim() === "") {
+          amountInput.style.borderColor = "red";
         }
 
-        // 인풋 필드 입력 시 테두리 초기화
-        titleInputValue.addEventListener("input", function () {
-          titleInputValue.style.borderColor = "";
-        });
-        priceInputValue.addEventListener("input", function () {
-          priceInputValue.style.borderColor = "";
-        });
-        amountInputValue.addEventListener("input", function () {
-          amountInputValue.style.borderColor = "";
-        });
+        // 인풋 필드 입력 시 테두리 초기화 및 유효성 검사
+        if (titleInput) {
+          titleInput.addEventListener("input", function () {
+            if (this.value.trim() !== "") {
+              this.style.borderColor = "";
+            }
+          });
+        }
+        if (priceInput) {
+          priceInput.addEventListener("input", function () {
+            let value = this.value.replace(/\./g, ",").replace(/[^0-9,]/g, "");
+            let parts = value.split(",");
+            if (parts.length > 2) {
+              value = parts[0] + "," + parts.slice(1).join("");
+            }
+            this.value = value;
+            if (this.value.trim() !== "") {
+              this.style.borderColor = "";
+            }
+          });
+        }
+        if (amountInput) {
+          amountInput.addEventListener("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, "");
+            if (this.value.trim() !== "") {
+              this.style.borderColor = "";
+            }
+          });
+        }
 
         return;
       }
@@ -341,7 +358,7 @@ function editResult() {
     this.value = value;
 
     // 가격 필드와 수량 필드에서만 유효성 검사
-    if (inputId === `price-${testid}-input` || inputId === `amount-{testid}-input`) {
+    if (inputId === `price-${testid}-input` || inputId === `amount-${testid}-input`) {
       // 문자가 포함되어있는지 검사
       if (/\D/.test(value) && input === `price-${testid}-input`) {
         // 가격 필드에서만 검사
